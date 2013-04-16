@@ -542,20 +542,18 @@ package starling.asset
 			useSize = false;
 			obj.name = dispObj.name;
 			if (dispObj.x != 0 || dispObj.y != 0) {
-				obj.x = dispObj.x*sDrawScale;
-				obj.y = dispObj.y*sDrawScale;
+				obj.x = dispObj.x;
+				obj.y = dispObj.y;
 			}
 			if (useSize) {
 				obj.width = dispObj.width;
 				obj.height = dispObj.height;
 			} else {
-				if (dispObj.scaleX != 1 || dispObj.scaleY != 1) {
+				if (obj.type == "image") {
 					obj.scaleX = dispObj.scaleX/sDrawScale;
 					obj.scaleY = dispObj.scaleY/sDrawScale;
 				}
 			}
-			//			if (dispObj.rotation != 0)
-			//				obj.rotation = dispObj.rotation * Math.PI / 180.0;
 			if (dispObj.visible != true)
 				obj.visible = dispObj.visible;
 			if (dispObj.alpha != 1.0)
@@ -1091,9 +1089,9 @@ package starling.asset
 			else if (prop == "skewY") {
 				curValue = Object(child)["rotation"]*Math.PI/180.0;//Math.atan2(matrix.b, matrix.a);
 			}
-			else if (prop == "x" || prop == "y") {
-				curValue = Object(child)[prop]* sDrawScale;
-			}
+//			else if (child is flash.display.Shape && (prop == "scaleX" || prop == "scaleY")) {
+//				curValue = Object(child)[prop]/sDrawScale;
+//			}
 			else
 			{
 				curValue = Object(child)[prop];
