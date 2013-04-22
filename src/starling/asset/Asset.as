@@ -553,6 +553,10 @@ package starling.asset
 					obj.scaleX = dispObj.scaleX/sDrawScale;
 					obj.scaleY = dispObj.scaleY/sDrawScale;
 				}
+				else {
+					obj.scaleX = dispObj.scaleX;
+					obj.scaleY = dispObj.scaleY;
+				}
 			}
 			if (dispObj.visible != true)
 				obj.visible = dispObj.visible;
@@ -770,6 +774,7 @@ package starling.asset
 			var i:int;
 			var animSprite:Object;
 			var initialLoop:Boolean = false;
+//			var adjustments:Object = new Array();
 			
 			for (var k:int = 0; k < movieClip.numChildren; k++) {
 				var kid:flash.display.DisplayObject = movieClip.getChildAt(k);
@@ -830,6 +835,7 @@ package starling.asset
 					
 					curEndValues.push({});
 					curEndFrames.push({});
+//					adjustments.push({});
 					
 					tracks.push({});
 				}
@@ -840,6 +846,11 @@ package starling.asset
 					matrix = transform.matrix;
 					
 					curValue = processProp(child, prop, matrix);
+					
+//					if (children[i][prop] && Math.abs(children[i][prop] / curValue) > 1.5 || Math.abs(children[i][prop] / curValue) < 0.75) {
+//						adjustments[i][prop] = children[i][prop] / curValue;
+//						curValue = children[i][prop];
+//					}
 					
 					curStartValues[childIndex][prop] = curValue;
 					curStartFrames[childIndex][prop] = 1;
@@ -931,6 +942,7 @@ package starling.asset
 						curEndFrames.splice(childIndex, 0, {});
 						
 						tracks.splice(childIndex, 0, {});
+//						adjustments.splice(childIndex, 0, {});
 						
 						if (childIndex == -1) {
 							childIndex = allChildren.indexOf(child);
@@ -946,6 +958,10 @@ package starling.asset
 							}
 								
 							curValue = processProp(child, prop, matrix);
+							
+//							if (adjustments[childIndex][prop]) {
+//								curValue *= adjustments[childIndex][prop];
+//							}
 							
 							curStartValues[childIndex][prop] = curValue;
 							curStartFrames[childIndex][prop] = 1;
@@ -976,9 +992,9 @@ package starling.asset
 						for each (prop in trackProps) {
 							curValue = processProp(child, prop, matrix);
 							
-							if (prop == "scaleY") {
-								trace("");
-							}
+//							if (adjustments[childIndex][prop]) {
+//								curValue *= adjustments[childIndex][prop];
+//							}
 							
 							var diff:Number = Math.abs((curEndValues[childIndex][prop] - curValue) / (curEndFrames[childIndex][prop] - curFrame) - 
 								(curStartValues[childIndex][prop] - curEndValues[childIndex][prop]) / (curStartFrames[childIndex][prop] - curEndFrames[childIndex][prop]));
@@ -1084,14 +1100,11 @@ package starling.asset
 				while (angle < -Math.PI) angle += Math.PI * 2.0;
 				while (angle >  Math.PI) angle -= Math.PI * 2.0;
 				
-				curValue = angle - Math.PI/2 + Object(child)["rotation"]*Math.PI/180.0;//Math.atan2(matrix.b, matrix.a);
+				curValue = angle - Math.PI/2 + Object(child)["rotation"]*Math.PI/180.0;
 			}
 			else if (prop == "skewY") {
-				curValue = Object(child)["rotation"]*Math.PI/180.0;//Math.atan2(matrix.b, matrix.a);
+				curValue = Object(child)["rotation"]*Math.PI/180.0;
 			}
-//			else if (child is flash.display.Shape && (prop == "scaleX" || prop == "scaleY")) {
-//				curValue = Object(child)[prop]/sDrawScale;
-//			}
 			else
 			{
 				curValue = Object(child)[prop];
@@ -1205,8 +1218,7 @@ package starling.asset
 				sprite.symbolName = symbol.name;
 			}
 			
-			copyBasicDispObjInfoToJson(cont, sprite);	
-			
+			copyBasicDispObjInfoToJson(cont, sprite);
 			
 			return sprite;
 		}
